@@ -25,7 +25,7 @@ python3 unclaimedgen.py
 To generate claimed Discord accounts, run the following command:
 
 ```bash
-python3 main.py
+python3 claimedgen.py
 
 ```
 
@@ -49,6 +49,10 @@ You can install a Chrome extension with Selenium CRX for hCaptcha solving, but h
 ## Project Status
 
 This project is not complete and needs work. It was created for fun and learning, and is not intended for serious use.
+
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## License
 

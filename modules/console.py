@@ -3,7 +3,6 @@ import os
 import time
 import msvcrt
 import ctypes
-import curses
 import datetime
 from enum import Enum
 
