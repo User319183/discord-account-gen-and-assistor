@@ -8,13 +8,26 @@ import random
 import string
 import pyperclip
 import secrets
+from faker import Faker
 
+# DISCORD
 DISCORD_URL = 'https://discord.com/register'
 EMAIL_INPUT_SELECTOR = 'input[name="email"]'
 DISPLAY_NAME_INPUT_SELECTOR = 'input[name="global_name"]'
 USERNAME_INPUT_SELECTOR = 'input[name="username"]'
 PASSWORD_INPUT_SELECTOR = 'input[name="password"]'
 MONTHS = ['january','february','march','april','may','june','july','august','september','october', 'november','december']
+
+# HCAPTCHA
+ARROW_IMAGE_SELECTOR = 'img.arrow-1CLBFh'
+HCAPTCHA_IFRAME_SELECTOR = 'iframe[src*="hcaptcha.com"]'
+CHECKMARK_SELECTOR = 'div#checkbox'
+
+# Create a Faker instance
+fake = Faker()
+
+def generate_realistic_name():
+    return fake.name().replace(' ', random.choice(['_', '.']))
 
 def generateDOB():
     year = str(random.randint(1997,2001))
@@ -33,6 +46,18 @@ def set_input_value(driver, css_selector, value):
     )
     element.clear()
     element.send_keys(value)
+    
+def switch_to_hcaptcha_iframe(driver):
+    WebDriverWait(driver, 10).until(EC.frame_to_be_available_and_switch_to_it((By.CSS_SELECTOR, HCAPTCHA_IFRAME_SELECTOR)))
+
+def click_checkmark(driver):
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, CHECKMARK_SELECTOR))).click()
+    
+def switch_back_from_iframe(driver):
+    driver.switch_to.default_content()
+
+# Add a setting for realistic names
+realistic_names = True
 
 def main():
     console = ConsoleX()
@@ -52,12 +77,19 @@ def main():
             set_input_value(driver, EMAIL_INPUT_SELECTOR, email)
             console.log(f"Email: {email}", LogLevel.SUCCESS)
             
-            display_name = "fuckedbyuser319183"
+            if realistic_names:
+                console.log("The realistic names setting is enabled", LogLevel.INFO)
+                display_name = generate_realistic_name()
+                username = generate_realistic_name()
+            else:
+                console.log("The realistic names setting is disabled", LogLevel.INFO)
+                display_name = "fuckedbyuser319183"
+                username = f"fuckedbyuser319183_{DisplayAndUsernameAndEmail}"
+
             console.log("Entering display name", LogLevel.INFO)
             set_input_value(driver, DISPLAY_NAME_INPUT_SELECTOR, display_name)
             console.log(f"Display Name: {display_name}", LogLevel.SUCCESS)
-            
-            username = f"fuckedbyuser319183_{DisplayAndUsernameAndEmail}"
+
             console.log("Entering username", LogLevel.INFO)
             set_input_value(driver, USERNAME_INPUT_SELECTOR, username)
             console.log(f"Username: {username}", LogLevel.SUCCESS)
@@ -70,9 +102,9 @@ def main():
             dob = generateDOB()
             year, month, day = dob.split('-')
 
-            set_input_value(driver, '[id="react-select-2-input"]', month) # Enter month
-            set_input_value(driver, '[id="react-select-3-input"]', day) # Enter day
-            set_input_value(driver, '[id="react-select-4-input"]', year) # Enter year
+            set_input_value(driver, '[id="react-select-2-input"]', month)
+            set_input_value(driver, '[id="react-select-3-input"]', day)
+            set_input_value(driver, '[id="react-select-4-input"]', year)
             
             try:
                 tos_checkbox = WebDriverWait(driver, 10).until(
@@ -87,6 +119,14 @@ def main():
             )
             submit_button.click()
             
+            console.log("Submitted the form", LogLevel.SUCCESS)
+            switch_to_hcaptcha_iframe(driver)
+            console.log("Switched to hCaptcha iframe", LogLevel.SUCCESS)
+            click_checkmark(driver)
+            console.log("Clicked the checkmark", LogLevel.SUCCESS)
+            switch_back_from_iframe(driver)
+            console.log("Switched back from iframe", LogLevel.SUCCESS)
+
             user_input = console.input("Enter the number 1 for logging the token: ")
             if user_input == '1':
                 console.log("Executing JS script to get token", LogLevel.INFO)
@@ -110,8 +150,7 @@ def main():
                 console.log(f"An error occurred while closing the driver: {e}", LogLevel.ERROR)
             console.log("Finished the main function", LogLevel.INFO)
 
-        # Wait for the user to change their IP/VPN
-        user_input = console.input("Press enter to create another instance: ")
+        user_input = console.input("Press enter to create another instance, waiting for user to change IP/VPN. Type 'exit' to exit: ")
         if user_input == 'exit':
             break
         
