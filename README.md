@@ -1,5 +1,6 @@
 # Discord Account Generator/Assistant
 
+# PATCHED - https://discord.com/invite/p3xxVhyb65 for the unpatched version
 This project is a Discord account generator and assistant, designed to automate the process of creating and managing Discord accounts. It is a bypass to older browser generators and was created for fun and learning purposes. 
 
 ## Prerequisites
