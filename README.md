@@ -23,10 +23,10 @@ python3 unclaimedgen.py
 
 ```
 
-To generate claimed Discord accounts, run the following command:
+To generate claimed email verified Discord accounts, run the following command:
 
 ```bash
-python3 claimedgen.py
+python3 main.py
 
 ```
 
